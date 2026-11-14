@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-cream: #FFF7EB;
+    --color-ink: #111111;
+    --color-orange: #FF4D00;
+    --color-blue: #1B1BFF;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+  }
+}
+
+@layer utilities {
+  .shadow-hard {
+    box-shadow: 6px 6px 0 #111111;
+  }
+  .shadow-hard-sm {
+    box-shadow: 4px 4px 0 #111111;
+  }
+}

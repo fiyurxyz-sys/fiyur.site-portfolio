@@ -1,0 +1,55 @@
+---
+const steps = [
+  {
+    num: '01',
+    title: 'Tanışma',
+    description: 'WhatsApp\'tan ya da formdan ulaş. Kısa bir görüşmeyle işletmeni, ihtiyacını ve hedefini anlarım. Hiçbir şey satmak için değil, gerçekten dinlemek için.',
+  },
+  {
+    num: '02',
+    title: 'Sana özel örnek demo',
+    description: 'Konuştuktan sonra, işletmene uygun küçük bir prototip ya da demo hazırlarım. Parayı konuşmadan önce neyi aldığını görürsün.',
+  },
+  {
+    num: '03',
+    title: 'Yazılı sözleşme ve aşamalı ödeme',
+    description: 'Ne yapılacağı, ne kadar süreceği ve neye mal olacağı baştan yazıya döküldükten sonra işe başlarım. Ödeme aşamalıdır — bitmeden para gitmez.',
+  },
+  {
+    num: '04',
+    title: 'Teslim ve destek',
+    description: 'Bitince sana gösterip öğretiyorum. Sonrasında bir şey bozulursa ya da değiştirmek istersen ulaşabilirsin — seni yalnız bırakmıyorum.',
+  },
+];
+---
+<section id="nasil-calisiyorum" class="py-20 sm:py-28 bg-ink text-cream">
+  <div class="px-4 sm:px-6 max-w-6xl mx-auto">
+    <div data-reveal>
+      <p class="text-sm font-semibold uppercase tracking-widest text-orange mb-3">Nasıl Çalışırım</p>
+      <h2 class="font-heading font-black text-[clamp(2rem,5vw,3.5rem)] leading-tight mb-14 text-cream">
+        Adım adım,<br/>şeffaf bir süreç.
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+      {steps.map((step) => (
+        <article
+          data-reveal
+          class="border-2 border-cream/20 p-7 hover:border-orange transition-colors duration-150"
+        >
+          <span class="font-heading font-black text-5xl text-orange/30 leading-none block mb-4">{step.num}</span>
+          <h3 class="font-heading font-bold text-xl mb-3 text-cream">{step.title}</h3>
+          <p class="font-body text-cream/70 leading-relaxed text-sm">{step.description}</p>
+        </article>
+      ))}
+    </div>
+
+    <!-- Special note about ownership -->
+    <div data-reveal class="border-2 border-orange p-6 bg-orange/5">
+      <p class="font-heading font-bold text-lg text-cream mb-2">📌 Önemli: Kod ve hosting hesabın sana aittir.</p>
+      <p class="font-body text-cream/70 text-sm leading-relaxed">
+        Yaptığım her şey — kod, veritabanı, domain, hosting hesabı — sana teslim edilir. Kendi adına kurulu, kendi şifrenle yönetilen hesaplar. Benimle çalışmayı bıraksam bile her şey senindir, kayıp yaşamazsın.
+      </p>
+    </div>
+  </div>
+</section>

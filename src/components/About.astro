@@ -1,0 +1,54 @@
+---
+const techs = [
+  'Python', 'FastAPI', 'Django', 'HTML', 'CSS', 'JavaScript',
+  'SQLite / PostgreSQL', 'Gemini API', 'OpenAI API', 'Langchain',
+  'Tkinter', 'Electron', 'REST API', 'Git', 'Linux / VPS',
+];
+---
+<section id="hakkimda" class="py-20 sm:py-28 px-4 sm:px-6 max-w-6xl mx-auto">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+    <!-- Text -->
+    <div data-reveal>
+      <p class="text-sm font-semibold uppercase tracking-widest text-orange mb-3">Hakkımda</p>
+      <h2 class="font-heading font-black text-[clamp(2rem,5vw,3.5rem)] leading-tight mb-7">
+        Fiyur <span class="text-orange">·</span><br/>Furkan Kılıçarslan
+      </h2>
+      <div class="space-y-4 font-body text-ink/80 leading-relaxed">
+        <p>
+          Merhaba. Ben Furkan — ama çoğu kişi beni Fiyur olarak tanır. Bursa'da yaşıyorum ve küçük işletmelerin yazılım sorunlarını çözmeyi seviyorum.
+        </p>
+        <p>
+          Büyük yazılım şirketlerinin çok pahalı ya da çok karmaşık bulduğu esnafın, kliniklerin, küçük ekiplerin sorunlarıyla ilgileniyorum. Ölçüp biçmeden, doğrudan onlarla konuşarak ne istediklerini anlıyorum ve ona göre üretiyorum.
+        </p>
+        <p>
+          Python'dan yapay zeka araçlarına, masaüstü uygulamalardan web sitelerine kadar geniş bir alanda çalışıyorum. Ama her şeyi tek başıma yapmak zorunda hissetmiyorum — gerekirse doğru kişileri devreye sokarım.
+        </p>
+      </div>
+
+      <!-- Tech stack -->
+      <div class="mt-8">
+        <p class="text-xs font-bold uppercase tracking-widest text-ink/40 mb-3">Kullandığım araçlar</p>
+        <ul class="flex flex-wrap gap-2" aria-label="Teknolojiler">
+          {techs.map((t) => (
+            <li class="text-xs font-semibold border-2 border-ink px-3 py-1 font-body">{t}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Photo placeholder -->
+    <div data-reveal class="flex justify-center lg:justify-end">
+      <div
+        class="w-64 h-80 sm:w-72 sm:h-96 border-2 border-ink shadow-hard bg-ink/5 flex flex-col items-center justify-center gap-3 relative"
+        role="img"
+        aria-label="Furkan Kılıçarslan fotoğrafı (yakında eklenecek)"
+      >
+        <!-- Decorative corner -->
+        <div class="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 border-orange"></div>
+        <div class="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 border-orange"></div>
+        <span class="text-5xl" aria-hidden="true">📷</span>
+        <span class="text-xs font-body text-ink/40 font-medium text-center px-4">[YER TUTUCU]<br/>Fotoğraf eklenecek</span>
+      </div>
+    </div>
+  </div>
+</section>

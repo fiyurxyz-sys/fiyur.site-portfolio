@@ -1,0 +1,89 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import Services from '../components/Services.astro';
+import HowIWork from '../components/HowIWork.astro';
+import Works from '../components/Works.astro';
+import About from '../components/About.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+---
+<Layout>
+  <Nav />
+  <main>
+    <Hero />
+    <Services />
+    <HowIWork />
+    <Works />
+    <About />
+    <Contact />
+  </main>
+  <Footer />
+  <WhatsAppFloat />
+</Layout>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Reduced motion check
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!prefersReduced) {
+    // Scroll-reveal for sections
+    const revealEls = document.querySelectorAll('[data-reveal]');
+    revealEls.forEach((el) => {
+      gsap.fromTo(
+        el,
+        { y: 48, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.75,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 88%',
+          },
+        }
+      );
+    });
+
+    // Hero word-by-word
+    const heroWords = document.querySelectorAll('.hero-word');
+    if (heroWords.length) {
+      gsap.fromTo(
+        heroWords,
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          ease: 'power3.out',
+          stagger: 0.07,
+          delay: 0.2,
+        }
+      );
+    }
+
+    // Hero subtitle + buttons
+    const heroSub = document.querySelectorAll('.hero-sub');
+    if (heroSub.length) {
+      gsap.fromTo(
+        heroSub,
+        { y: 20, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          ease: 'power3.out',
+          stagger: 0.1,
+          delay: 0.8,
+        }
+      );
+    }
+  }
+</script>
