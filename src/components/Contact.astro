@@ -113,24 +113,44 @@ const web3formsKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
 </section>
 
 <script>
-  const form = document.getElementById("form") as HTMLFormElement;
-  const result = document.getElementById("result") as HTMLElement;
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+  const statusDiv = document.getElementById('form-status');
+  const successMsg = document.getElementById('form-success');
+  const errorMsg = document.getElementById('form-error');
 
-  form.addEventListener("submit", async (e) => {
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    result.innerHTML = "Sending...";
+    if (!submitBtn) return;
 
-    const response = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      body: new FormData(form),
-    });
+    // Loading state
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Gönderiliyor...';
+    statusDiv?.classList.add('hidden');
+    successMsg?.classList.add('hidden');
+    errorMsg?.classList.add('hidden');
 
-    const data = await response.json();
-    if (data.success) {
-      result.innerHTML = "Form Submitted Successfully";
-      form.reset();
-    } else {
-      result.innerHTML = data.message;
+    try {
+      const formData = new FormData(form);
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        statusDiv?.classList.remove('hidden');
+        successMsg?.classList.remove('hidden');
+        form.reset();
+      } else {
+        throw new Error(data.message || 'Unknown error');
+      }
+    } catch (err) {
+      statusDiv?.classList.remove('hidden');
+      errorMsg?.classList.remove('hidden');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Gönder';
     }
   });
 </script>
