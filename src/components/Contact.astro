@@ -65,6 +65,19 @@ const web3formsKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
           </div>
 
           <div>
+            <label for="email" class="block text-sm font-semibold mb-2 text-cream/80">E-posta Adresin</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              autocomplete="email"
+              class="w-full bg-transparent border-2 border-cream/20 px-4 py-3 text-cream placeholder:text-cream/30 focus:outline-none focus:border-orange transition-colors duration-150 font-body"
+              placeholder="ornek@posta.com"
+            />
+          </div>
+
+          <div>
             <label for="phone" class="block text-sm font-semibold mb-2 text-cream/80">Telefon (isteğe bağlı)</label>
             <input
               type="tel"
@@ -121,9 +134,15 @@ const web3formsKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!submitBtn) return;
+    if (!form || !submitBtn) return;
 
-    // Loading state
+    // Tarayıcı doğrulaması kontrolü
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    // Durumları sıfırla
     submitBtn.disabled = true;
     submitBtn.textContent = 'Gönderiliyor...';
     statusDiv?.classList.add('hidden');
@@ -132,22 +151,41 @@ const web3formsKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
 
     try {
       const formData = new FormData(form);
+      const dataObject: Record<string, any> = Object.fromEntries(formData.entries());
+
+      // Eğer formdaki access_key boş veya yer tutucuysa env değişkeninden al
+      if (!dataObject.access_key || dataObject.access_key === 'your_web3forms_key_here') {
+        dataObject.access_key = import.meta.env.PUBLIC_WEB3FORMS_KEY || '';
+      }
+
+      if (!dataObject.access_key) {
+        throw new Error('Erişim anahtarı (access_key) bulunamadı. Lütfen .env dosyasını kontrol edin.');
+      }
+
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(dataObject),
       });
-      const data = await response.json();
 
-      if (data.success) {
+      const result = await response.json();
+
+      if (result.success) {
         statusDiv?.classList.remove('hidden');
         successMsg?.classList.remove('hidden');
         form.reset();
       } else {
-        throw new Error(data.message || 'Unknown error');
+        throw new Error(result.message || 'Mesaj gönderilemedi.');
       }
-    } catch (err) {
+    } catch (err: any) {
       statusDiv?.classList.remove('hidden');
-      errorMsg?.classList.remove('hidden');
+      if (errorMsg) {
+        errorMsg.textContent = `⚠️ ${err.message || 'Bir şeyler ters gitti. WhatsApp\'tan yazarsan daha hızlı ulaşırım.'}`;
+        errorMsg.classList.remove('hidden');
+      }
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Gönder';
