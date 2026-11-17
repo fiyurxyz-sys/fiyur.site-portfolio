@@ -1,0 +1,310 @@
+---
+import { sites } from '../data/sites';
+
+const accents = ['#FF4D00', '#1B1BFF', '#111111'];
+const categories = [...new Set(sites.map((s) => s.kategori))];
+const hostOf = (u: string) => {
+  try { return new URL(u).host; } catch { return ''; }
+};
+---
+<section id="canli-siteler" class="py-20 sm:py-28 px-4 sm:px-6 max-w-6xl mx-auto">
+  <div data-reveal>
+    <p class="text-sm font-semibold uppercase tracking-widest text-orange mb-3">Canlı Siteler</p>
+    <h2 class="font-heading font-black text-[clamp(2rem,5vw,3.5rem)] leading-tight mb-4">
+      Yaptığım siteleri<br/>canlı gör
+    </h2>
+    <p class="text-ink/60 font-body mb-10 max-w-lg text-sm">
+      Aşağıdakilerin hepsi şu an yayında. Tıkla, gez, dene.
+    </p>
+  </div>
+
+  {categories.length > 1 && (
+    <div class="flex flex-wrap gap-2 mb-10" role="group" aria-label="Kategoriye göre filtrele" data-reveal>
+      <button type="button" data-filter="all" aria-pressed="true"
+        class="ls-pill">Hepsi</button>
+      {categories.map((c) => (
+        <button type="button" data-filter={c} aria-pressed="false" class="ls-pill">{c}</button>
+      ))}
+    </div>
+  )}
+
+  <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 list-none" id="ls-grid">
+    {sites.map((s, i) => {
+      const accent = accents[i % accents.length];
+      const live = Boolean(s.url);
+      const hasShot = s.ekranGoruntusu && s.ekranGoruntusu !== 'placeholder';
+      return (
+        <li data-reveal data-site-item data-kategori={s.kategori}>
+          <article
+            class="ls-card relative h-full flex flex-col bg-cream border-2 border-ink transition-transform duration-200 hover:-rotate-1 hover:scale-[1.02] motion-reduce:transition-none motion-reduce:hover:transform-none focus-within:-rotate-1 focus-within:scale-[1.02] motion-reduce:focus-within:transform-none"
+            style={`--accent:${accent}; box-shadow: 6px 6px 0 ${accent};`}
+          >
+            <div class="aspect-[16/10] border-b-2 border-ink overflow-hidden relative" style={`background:${accent}`}>
+              {hasShot ? (
+                <img src={s.ekranGoruntusu} alt={`${s.ad} sitesinin ekran görüntüsü`}
+                  width="640" height="400" loading="lazy" decoding="async"
+                  class="w-full h-full object-cover object-top" />
+              ) : (
+                <div class="w-full h-full flex items-center justify-center" role="img" aria-label={`${s.ad} için önizleme yer tutucusu`}>
+                  <span class="font-heading font-black text-cream/90 text-6xl select-none" aria-hidden="true">{s.ad.replace(/^\[YER TUTUCU\]\s*/, '').charAt(0)}</span>
+                </div>
+              )}
+              <span class="absolute top-2 left-2 text-[10px] font-bold uppercase tracking-widest bg-cream text-ink border-2 border-ink px-2 py-0.5">{s.kategori}</span>
+            </div>
+
+            <div class="p-5 flex flex-col flex-1">
+              <h3 class="font-heading font-bold text-xl leading-tight mb-2">{s.ad}</h3>
+              <p class="font-body text-ink/70 text-sm leading-relaxed mb-4">{s.aciklama}</p>
+              <ul class="flex flex-wrap gap-2 mb-5 list-none" aria-label="Kullanılan teknolojiler">
+                {s.teknolojiler.map((t) => (
+                  <li class="text-xs font-semibold border border-ink/30 px-2 py-0.5">{t}</li>
+                ))}
+              </ul>
+
+              {live ? (
+                <button
+                  type="button"
+                  data-open-site
+                  data-ad={s.ad}
+                  data-url={s.url}
+                  data-host={hostOf(s.url)}
+                  data-shot={hasShot ? s.ekranGoruntusu : ''}
+                  data-iframe={String(s.iframeIzni)}
+                  class="mt-auto self-start font-heading font-bold text-sm px-4 py-2 bg-ink text-cream border-2 border-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2 after:absolute after:inset-0 after:content-['']"
+                >
+                  Canlı gör →
+                </button>
+              ) : (
+                <span class="mt-auto self-start font-heading font-bold text-sm px-4 py-2 border-2 border-ink/30 text-ink/40">Yakında</span>
+              )}
+            </div>
+          </article>
+        </li>
+      );
+    })}
+  </ul>
+</section>
+
+<!-- Modal -->
+<dialog id="ls-modal" aria-labelledby="ls-title" class="ls-dialog p-0 m-auto bg-cream border-2 border-ink backdrop:bg-ink/70 w-[96vw] h-[92vh] sm:w-[min(94vw,1100px)] sm:h-[min(90vh,800px)] max-w-none max-h-none overflow-hidden">
+  <div class="flex flex-col h-full">
+    <!-- Tarayıcı çubuğu -->
+    <div class="flex items-center gap-2 sm:gap-3 px-3 py-2 border-b-2 border-ink bg-cream">
+      <div class="hidden sm:flex gap-1.5" aria-hidden="true">
+        <span class="w-3 h-3 rounded-full bg-orange border border-ink"></span>
+        <span class="w-3 h-3 rounded-full bg-blue border border-ink"></span>
+        <span class="w-3 h-3 rounded-full bg-ink"></span>
+      </div>
+      <div class="flex-1 min-w-0 flex items-center gap-2 border-2 border-ink bg-white px-3 py-1 text-xs font-body">
+        <svg class="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1a5 5 0 00-5 5v3H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6a5 5 0 00-5-5zm-3 8V6a3 3 0 116 0v3H9z"/></svg>
+        <span id="ls-title" class="truncate font-semibold">Site</span>
+        <span id="ls-host" class="truncate text-ink/50"></span>
+      </div>
+      <div class="flex gap-1.5 shrink-0">
+        <button type="button" id="ls-device" aria-pressed="false" class="ls-tool" title="Telefon görünümüne geç">
+          <span id="ls-device-label">Telefon</span>
+        </button>
+        <a id="ls-newtab" href="#" target="_blank" rel="noopener noreferrer" class="ls-tool">
+          <span class="hidden sm:inline">Yeni sekmede aç</span><span class="sm:hidden">Aç</span> ↗
+        </a>
+        <button type="button" id="ls-close" class="ls-tool" aria-label="Kapat">✕</button>
+      </div>
+    </div>
+
+    <!-- İçerik -->
+    <div class="relative flex-1 bg-ink/10 overflow-auto flex justify-center">
+      <div id="ls-loading" class="absolute inset-0 flex items-center justify-center bg-cream z-10" role="status">
+        <div class="flex flex-col items-center gap-3">
+          <span class="ls-spinner" aria-hidden="true"></span>
+          <span class="text-sm font-body font-semibold">Yükleniyor…</span>
+        </div>
+      </div>
+
+      <div id="ls-frame-wrap" class="h-full bg-white border-x-2 border-ink/0 transition-[width] duration-300 motion-reduce:transition-none w-full">
+        <iframe id="ls-iframe" title="Canlı site önizlemesi" class="w-full h-full border-0 bg-white"
+          referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+      </div>
+
+      <div id="ls-fallback" class="hidden absolute inset-0 z-20 bg-cream overflow-auto p-5 sm:p-8">
+        <div class="max-w-xl mx-auto text-center">
+          <p class="font-heading font-bold text-lg mb-1">Bu site önizlemede açılamadı</p>
+          <p class="font-body text-sm text-ink/60 mb-5">Bazı siteler güvenlik nedeniyle başka sayfa içinde gösterilmez. Yeni sekmede sorunsuz açılır.</p>
+          <img id="ls-shot" alt="" width="640" height="400" class="hidden w-full border-2 border-ink mb-5 object-cover object-top aspect-[16/10]" />
+          <a id="ls-newtab2" href="#" target="_blank" rel="noopener noreferrer"
+            class="inline-flex font-heading font-bold text-sm px-5 py-3 bg-orange text-cream border-2 border-ink shadow-hard-sm">Yeni sekmede aç ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <p id="ls-hint" class="hidden sm:block text-[11px] font-body text-ink/50 px-3 py-1.5 border-t-2 border-ink bg-cream">
+      Site açılmadıysa sağ üstten “Yeni sekmede aç”ı kullan.
+    </p>
+  </div>
+</dialog>
+
+<style>
+  .ls-pill {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700;
+    font-size: 0.875rem;
+    padding: 0.4rem 1rem;
+    border: 2px solid #111;
+    border-radius: 9999px;
+    background: #FFF7EB;
+    color: #111;
+    transition: transform 0.15s, background-color 0.15s, color 0.15s;
+  }
+  .ls-pill:hover { transform: translateY(-2px); }
+  .ls-pill[aria-pressed='true'] { background: #111; color: #FFF7EB; }
+  .ls-pill:focus-visible, .ls-tool:focus-visible { outline: 2px solid #FF4D00; outline-offset: 2px; }
+
+  .ls-tool {
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.75rem;
+    padding: 0.35rem 0.6rem; border: 2px solid #111; background: #FFF7EB; color: #111;
+    white-space: nowrap; cursor: pointer; transition: background-color 0.15s, color 0.15s;
+  }
+  .ls-tool:hover, .ls-tool[aria-pressed='true'] { background: #111; color: #FFF7EB; }
+
+  .ls-spinner {
+    width: 2rem; height: 2rem; border-radius: 9999px;
+    border: 4px solid #111; border-top-color: #FF4D00;
+    animation: ls-spin 0.8s linear infinite;
+  }
+  @keyframes ls-spin { to { transform: rotate(360deg); } }
+
+  .ls-dialog[open] { animation: ls-pop 0.22s ease-out; }
+  @keyframes ls-pop { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: none; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ls-dialog[open] { animation: none; }
+    .ls-spinner { animation-duration: 2s; }
+  }
+</style>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---------- Filtre ----------
+  const pills = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const items = document.querySelectorAll<HTMLElement>('[data-site-item]');
+
+  pills.forEach((pill) => {
+    pill.addEventListener('click', () => {
+      const f = pill.dataset.filter;
+      pills.forEach((p) => p.setAttribute('aria-pressed', String(p === pill)));
+      items.forEach((li) => {
+        const match = f === 'all' || li.dataset.kategori === f;
+        li.hidden = !match;
+        if (match && !reduce) {
+          li.animate(
+            [
+              { opacity: 0, transform: 'translateY(16px) scale(0.94)' },
+              { opacity: 1, transform: 'none' },
+            ],
+            { duration: 300, easing: 'cubic-bezier(.2,.8,.2,1)' }
+          );
+        }
+      });
+    });
+  });
+
+  // ---------- Modal ----------
+  const modal = document.getElementById('ls-modal') as HTMLDialogElement | null;
+  const iframe = document.getElementById('ls-iframe') as HTMLIFrameElement | null;
+  const wrap = document.getElementById('ls-frame-wrap');
+  const loading = document.getElementById('ls-loading');
+  const fallback = document.getElementById('ls-fallback');
+  const shot = document.getElementById('ls-shot') as HTMLImageElement | null;
+  const title = document.getElementById('ls-title');
+  const host = document.getElementById('ls-host');
+  const newTab = document.getElementById('ls-newtab') as HTMLAnchorElement | null;
+  const newTab2 = document.getElementById('ls-newtab2') as HTMLAnchorElement | null;
+  const deviceBtn = document.getElementById('ls-device') as HTMLButtonElement | null;
+  const deviceLabel = document.getElementById('ls-device-label');
+  const closeBtn = document.getElementById('ls-close');
+
+  let opener: HTMLElement | null = null;
+  let timer: number | undefined;
+  let mobileView = false;
+
+  function setDevice(mobile: boolean) {
+    mobileView = mobile;
+    if (!wrap || !deviceBtn || !deviceLabel) return;
+    wrap.style.width = mobile ? '390px' : '100%';
+    wrap.style.maxWidth = '100%';
+    wrap.style.borderInline = mobile ? '2px solid #111' : '';
+    deviceBtn.setAttribute('aria-pressed', String(mobile));
+    deviceLabel.textContent = mobile ? 'Masaüstü' : 'Telefon';
+    deviceBtn.title = mobile ? 'Masaüstü görünümüne geç' : 'Telefon görünümüne geç';
+  }
+
+  function showFallback(imgSrc: string, adText: string) {
+    window.clearTimeout(timer);
+    loading?.classList.add('hidden');
+    fallback?.classList.remove('hidden');
+    if (shot) {
+      if (imgSrc) {
+        shot.src = imgSrc;
+        shot.alt = `${adText} sitesinin ekran görüntüsü`;
+        shot.classList.remove('hidden');
+      } else {
+        shot.classList.add('hidden');
+      }
+    }
+  }
+
+  function openSite(btn: HTMLElement) {
+    if (!modal || !iframe) return;
+    const { ad = '', url = '', host: h = '', shot: s = '', iframe: allow = 'null' } = btn.dataset;
+    opener = btn;
+
+    title && (title.textContent = ad);
+    host && (host.textContent = h);
+    if (newTab) newTab.href = url;
+    if (newTab2) newTab2.href = url;
+    setDevice(false);
+
+    fallback?.classList.add('hidden');
+    loading?.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    modal.showModal();
+
+    if (allow === 'false') {
+      showFallback(s, ad);
+      return;
+    }
+
+    iframe.onload = () => {
+      window.clearTimeout(timer);
+      loading?.classList.add('hidden');
+    };
+    iframe.src = url; // iframe sadece burada yüklenir
+    // Engellenen siteler bazen hiç load üretmez; süre dolunca fallback.
+    timer = window.setTimeout(() => showFallback(s, ad), 10000);
+  }
+
+  function closeModal() {
+    if (modal?.open) modal.close();
+  }
+
+  modal?.addEventListener('close', () => {
+    window.clearTimeout(timer);
+    if (iframe) { iframe.onload = null; iframe.src = 'about:blank'; }
+    document.body.style.overflow = '';
+    opener?.focus();
+  });
+
+  document.querySelectorAll<HTMLElement>('[data-open-site]').forEach((b) =>
+    b.addEventListener('click', () => openSite(b))
+  );
+
+  closeBtn?.addEventListener('click', closeModal);
+  deviceBtn?.addEventListener('click', () => setDevice(!mobileView));
+
+  // Dışarı tıklama: dialog kutusunun dışı (backdrop) hedefi dialog'un kendisidir.
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+  // Esc: <dialog> kendisi kapatır.
+</script>
